@@ -1,0 +1,72 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Pregunta 1</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f2f2f2;
+            text-align: center;
+            padding-top: 50px;
+        }
+        h1 {
+            font-size: 36px;
+            margin-bottom: 10px;
+        }
+        h2 {
+            font-weight: normal;
+            color: #555;
+            margin-bottom: 30px;
+        }
+        .logo {
+            margin: 20px auto;
+            width: 200px;
+            height: auto;
+        }
+        .tiempo {
+            position: absolute;
+            top: 150px;
+            right: 20%;
+            color: #333;
+            font-size: 14px;
+        }
+        .opciones {
+            display: grid;
+            grid-template-columns: repeat(2, 300px);
+            gap: 100px;
+            justify-content: center;
+            margin-top: 30px;
+        }
+
+        .opcion {
+            background-color: #222;
+            color: white;
+            padding: 12px 20px;
+            border-radius: 10px;
+            cursor: pointer;
+            width: 300px;
+            transition: 0.3s;
+        }
+        .opcion:hover {
+            background-color: #444;
+        }
+    </style>
+</head>
+<body>
+    <h1>Pregunta 1</h1>
+    <h2>Categoría administración de empresas</h2>
+
+    <div class="tiempo">Tiempo<br>00:05</div>
+
+    <img src="{% static 'img/unl.png' %}" alt="Logo UNL" class="logo">
+
+    <div class="opciones">
+        <div class="opcion">A. Elaborar una campaña publicitaria</div>
+        <div class="opcion">B. Controlar el desempeño de los empleados</div>
+        <div class="opcion">C. Realizar encuestas de satisfacción</div>
+        <div class="opcion">D. Diseñar un producto nuevo</div>
+    </div>
+</body>
+</html>
