@@ -76,9 +76,8 @@ class Examen(models.Model):
 
 
 class Pregunta(models.Model):
-    url_imagen = models.TextField()
+    url_imagen = models.CharField(max_length=255)
     cuerpo = models.TextField()
-    tiempo = models.IntegerField()
     idbancopregunta = models.ForeignKey(
         Bancopregunta,
         models.DO_NOTHING,
