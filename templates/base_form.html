@@ -1,0 +1,26 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Formulario{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'css/estilo.css' %}">
+</head>
+<body class="{% block body_class %}{% endblock %}">
+    <div class="{% block form_container_class %}formulario-contenedor{% endblock %}">
+        <h2>{% block heading %}Formulario{% endblock %}</h2>
+
+        {% block error_message %}{% endblock %}
+
+        {% block body %}
+            <form method="post">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button type="submit" class="btn {% block button_class %}{% endblock %}">
+                    {% block button_text %}Enviar{% endblock %}
+                </button>
+            </form>
+        {% endblock %}
+    </div>
+</body>
+</html>

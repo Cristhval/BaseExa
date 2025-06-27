@@ -1,0 +1,137 @@
+/* ======== RESET Y BASE ======== */
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* ======== CONTENEDORES BASE ======== */
+.formulario-contenedor {
+    background-color: white;
+    padding: 2em 3em;
+    border-radius: 12px;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+    width: 100%;
+    max-width: 400px;
+}
+
+/* ======== CUERPO SEGÚN TIPO DE PÁGINA ======== */
+body.login {
+    background: linear-gradient(to right, #e0eafc, #cfdef3);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+body.registro {
+    background: linear-gradient(to right, #dbe6f6, #c5796d);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+body.bienvenida {
+    background: linear-gradient(to right, #f5f7fa, #c3cfe2);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    text-align: center;
+}
+
+/* ======== ESPECÍFICOS PARA CADA CONTENEDOR ======== */
+.login-contenedor,
+.registro-contenedor {
+    /* Puedes agregar estilos específicos si quieres, sino usa solo formulario-contenedor */
+}
+
+/* ======== TEXTOS ======== */
+h2 {
+    text-align: center;
+    color: #333;
+    margin-bottom: 1em;
+}
+
+body.bienvenida h1 {
+    font-size: 2.5em;
+    color: #333;
+}
+
+body.bienvenida p {
+    font-size: 1.2em;
+    color: #555;
+    margin-bottom: 2em;
+}
+
+/* ======== FORMULARIO ======== */
+form p {
+    margin-bottom: 1em;
+}
+
+input[type="text"],
+input[type="email"],
+input[type="password"],
+select,
+textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    margin-top: 4px;
+    font-size: 1em;
+}
+
+/* ======== BOTONES ======== */
+.btn {
+    text-decoration: none;
+    background-color: #4CAF50;
+    color: white;
+    padding: 12px 24px;
+    margin: 10px auto;
+    border: none;
+    border-radius: 8px;
+    font-size: 1em;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    display: inline-block;
+}
+
+.btn:hover {
+    background-color: #45a049;
+}
+
+/* Para botón que ocupa todo el ancho */
+.btn-full {
+    display: block;
+    width: 100%;
+    text-align: center;
+}
+
+/* ======== ERRORES ======== */
+.error {
+    color: red;
+    text-align: center;
+    margin-bottom: 1em;
+}
+
+/* ======== RESPONSIVE ======== */
+@media (max-width: 600px) {
+    body.bienvenida h1 {
+        font-size: 2em;
+    }
+
+    body.bienvenida p {
+        font-size: 1em;
+    }
+
+    .btn {
+        width: 80%;
+    }
+}

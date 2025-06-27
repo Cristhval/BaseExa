@@ -1,0 +1,18 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Bienvenido al Sistema de Evaluaciones</title>
+    <link rel="stylesheet" href="{% static 'css/estilo.css' %}">
+</head>
+<body class="bienvenida">
+    <h1>¡Bienvenido!</h1>
+    <p>Este es el sistema para presentar pruebas en línea. Si eres estudiante, regístrate para comenzar.</p>
+
+    <div class="botones">
+        <a href="{% url 'registro_estudiante' %}" class="btn">Registrarse como Estudiante</a>
+        <a href="{% url 'login' %}" class="btn">Iniciar Sesión</a>
+    </div>
+</body>
+</html>

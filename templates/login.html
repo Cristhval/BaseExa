@@ -1,0 +1,14 @@
+{% extends 'base_form.html' %}
+
+{% block title %}Iniciar Sesión{% endblock %}
+{% block body_class %}login{% endblock %}
+{% block form_container_class %}login-contenedor{% endblock %}
+{% block heading %}Iniciar Sesión{% endblock %}
+
+{% block error_message %}
+    {% if form.errors %}
+        <p class="error">Usuario o contraseña incorrectos</p>
+    {% endif %}
+{% endblock %}
+{% block button_text %}Entrar{% endblock %}
+

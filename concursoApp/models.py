@@ -10,12 +10,29 @@ class Categoria(models.Model):
     def __str__(self):
         return self.nombre
 
+class Tiempo(models.Model):
+    tiempo = models.IntegerField()
+
+    class Meta:
+        db_table = 'tiempo'
+        managed = False
+
+    def __str__(self):
+        return f"{self.tiempo} segundos"
+
 
 class Bancopregunta(models.Model):
     idcategoria = models.ForeignKey(
         Categoria,
         models.DO_NOTHING,
         db_column='IdCategoria',
+        blank=True,
+        null=True
+    )
+    tiempo = models.ForeignKey(
+        Tiempo,
+        models.DO_NOTHING,
+        db_column='tiempo_id',
         blank=True,
         null=True
     )
@@ -32,7 +49,7 @@ class Estudiante(models.Model):
     nombre = models.CharField(max_length=50)
     apellido = models.CharField(max_length=50)
     correo = models.CharField(max_length=200)
-    cedula = models.CharField(max_length=11)
+    cedula = models.CharField(max_length=11, unique=True)
 
     class Meta:
         db_table = 'estudiante'
@@ -176,3 +193,4 @@ class RespuestaEstudiante(models.Model):
     def __str__(self):
         estado = "Correcta" if self.es_correcta else "Incorrecta"
         return f"Resp. estudiante {self.pk} - {estado}"
+

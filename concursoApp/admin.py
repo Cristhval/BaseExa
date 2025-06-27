@@ -1,10 +1,11 @@
 from django.contrib import admin
 from .models import (
-    Categoria, Bancopregunta, Estudiante, Prueba,
+    Categoria,Tiempo, Bancopregunta, Estudiante, Prueba,
     Examen, Pregunta, Respuesta, Resultado, RespuestaEstudiante
 )
 
 admin.site.register(Categoria)
+admin.site.register(Tiempo)
 admin.site.register(Bancopregunta)
 admin.site.register(Estudiante)
 admin.site.register(Prueba)
