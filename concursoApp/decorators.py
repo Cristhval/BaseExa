@@ -1,8 +1,10 @@
 from django.contrib.auth.decorators import user_passes_test
+from django.shortcuts import redirect
 
 def admin_required(view_func):
-    decorated_view_func = user_passes_test(
-        lambda u: u.is_authenticated and u.groups.filter(name='admin').exists(),
-        login_url='/login/'
-    )(view_func)
-    return decorated_view_func
+    def _wrapped_view(request, *args, **kwargs):
+        user = request.user
+        if user.is_authenticated and user.groups.filter(name='admin').exists():
+            return view_func(request, *args, **kwargs)
+        return redirect('bienvenida')  # redirige a la vista general si no tiene permisos
+    return _wrapped_view

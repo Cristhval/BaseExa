@@ -78,3 +78,7 @@ def crear_prueba(request):
     else:
         form = PruebaForm()
     return render(request, 'crear_prueba.html', {'form': form})
+
+@admin_required
+def panel_admin(request):
+    return render(request, 'panel_admin.html')

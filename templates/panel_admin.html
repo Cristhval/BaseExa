@@ -1,0 +1,41 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Panel del Administrador</title>
+    <link rel="stylesheet" href="{% static 'css/estilo.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body class="admin-panel">
+
+   <header class="admin-navbar">
+    <div class="navbar-left">
+        <i class="fas fa-user-shield"></i>
+        <span>Administrador</span>
+    </div>
+    <div class="navbar-right">
+        <form action="{% url 'logout' %}" method="post" class="logout-form">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-logout">
+                <i class="fas fa-sign-out-alt"></i> Cerrar sesión
+            </button>
+        </form>
+    </div>
+</header>
+
+
+    <main class="admin-content">
+        <div class="admin-card">
+            <h2>Gestión de Pruebas</h2>
+            <p>Desde aquí puedes crear y administrar pruebas para los usuarios.</p>
+            <div class="admin-acciones">
+                <a href="{% url 'crear_prueba' %}" class="btn btn-primary">
+                    <i class="fas fa-plus-circle"></i> Crear nueva prueba
+                </a>
+            </div>
+        </div>
+    </main>
+
+</body>
+</html>

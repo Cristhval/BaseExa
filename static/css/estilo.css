@@ -46,10 +46,54 @@ body.bienvenida {
     text-align: center;
 }
 
-/* ======== ESPECÍFICOS PARA CADA CONTENEDOR ======== */
-.login-contenedor,
-.registro-contenedor {
-    /* Puedes agregar estilos específicos si quieres, sino usa solo formulario-contenedor */
+/* ======== PANEL ADMIN ======== */
+body.admin-panel {
+    background: linear-gradient(to right, #f5f7fa, #c3cfe2);
+    min-height: 100vh;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.admin-panel-contenedor {
+    background-color: white;
+    padding: 2em 3em;
+    border-radius: 12px;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+    max-width: 500px;
+    width: 100%;
+}
+
+.admin-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5em;
+}
+
+.logout-form {
+    margin: 0;
+}
+
+.btn-logout {
+    background-color: #e74c3c;
+}
+
+.btn-logout:hover {
+    background-color: #c0392b;
+}
+
+.admin-acciones {
+    display: flex;
+    flex-direction: column;
+    gap: 1em;
+    text-align: center;
+}
+
+.admin-acciones .btn {
+    width: 100%;
 }
 
 /* ======== TEXTOS ======== */
@@ -134,4 +178,52 @@ textarea {
     .btn {
         width: 80%;
     }
+}
+
+.admin-navbar {
+    width: 100%;
+    background-color: #2c3e50;
+    color: white;
+    padding: 1em 2em;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 10;
+}
+
+.navbar-left {
+    display: flex;
+    align-items: center;
+    gap: 0.5em;
+    font-size: 1.2em;
+    font-weight: bold;
+}
+
+.navbar-right {
+    display: flex;
+    align-items: center;
+}
+
+.logout-form {
+    margin: 0;
+}
+
+.btn-logout {
+    background-color: #e74c3c;
+    color: white;
+    padding: 10px 16px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.9em;
+    display: flex;
+    align-items: center;
+    gap: 0.5em;
+}
+
+.btn-logout:hover {
+    background-color: #c0392b;
 }

@@ -126,8 +126,12 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 
-LOGIN_REDIRECT_URL = '/'  # redirige después del login
-LOGOUT_REDIRECT_URL = '/login/'
+LOGIN_REDIRECT_URL = '/panel-admin/'
+
+
+login_url='/'
+
+LOGOUT_REDIRECT_URL = '/'
 
 STATICFILES_DIRS = [
     BASE_DIR / "static"

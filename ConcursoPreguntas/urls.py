@@ -30,6 +30,10 @@ urlpatterns = [
 
     path('login/', LoginView.as_view(template_name='login.html'), name='login'),
     path('logout/', LogoutView.as_view(), name='logout'),
+
+    path('panel-admin/', views.panel_admin, name='panel_admin'),
+
     path('crear-prueba/', crear_prueba, name='crear_prueba'),
+
     path('pregunta1/', views.pregunta1, name='pregunta1'),
 ]
