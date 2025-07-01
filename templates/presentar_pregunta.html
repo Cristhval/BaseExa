@@ -1,0 +1,111 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ examen.titulo }} - Pregunta {{ numero }}</title>
+    <link rel="stylesheet" href="{% static 'css/estilo.css' %}">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f2f4f8;
+            padding: 20px;
+        }
+        .container {
+            max-width: 800px;
+            margin: auto;
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.1);
+        }
+        h2 {
+            color: #2c3e50;
+        }
+        .pregunta {
+            margin-bottom: 20px;
+        }
+        .respuestas label {
+            display: block;
+            margin-bottom: 10px;
+            background: #ecf0f1;
+            padding: 10px;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+        .respuestas input[type="radio"] {
+            margin-right: 10px;
+        }
+        .imagen-pregunta {
+            max-width: 100%;
+            margin: 15px 0;
+            border-radius: 10px;
+        }
+        .boton {
+            background-color: #3498db;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+        .boton:hover {
+            background-color: #2980b9;
+        }
+        #timer {
+            font-weight: bold;
+            color: #e74c3c;
+        }
+    </style>
+    <script>
+        let tiempo = {{ tiempo_segundos }};
+        const cuentaRegresiva = () => {
+            const tiempoElem = document.getElementById('timer');
+            if (tiempo > 0) {
+                tiempo--;
+                tiempoElem.innerText = tiempo + 's';
+            } else {
+                document.getElementById('form-respuesta').submit();
+            }
+        };
+        setInterval(cuentaRegresiva, 1000);
+    </script>
+</head>
+<body>
+    <div class="container">
+        <h2>{{ examen.titulo }}</h2>
+        <p><strong>Pregunta {{ numero }} de {{ total }}</strong></p>
+        <p><strong>Tiempo restante: <span id="timer">{{ tiempo_segundos }}s</span></strong></p>
+
+        <form method="post" id="form-respuesta">
+            {% csrf_token %}
+            <div class="pregunta">
+                <p>{{ pregunta.cuerpo }}</p>
+
+                {% if pregunta.url_imagen %}
+                    {% if pregunta.url_imagen|slice:":4" == "http" %}
+                    <!-- URL absoluta (internet) -->
+                    <img src="{{ pregunta.url_imagen }}" alt="Imagen de la pregunta" class="imagen-pregunta">
+                {% else %}
+                    <!-- Ruta relativa a /static/ -->
+                    <img src="{% static pregunta.url_imagen %}" alt="Imagen de la pregunta" class="imagen-pregunta">
+                {% endif %}
+            {% endif %}
+
+            </div>
+
+            <div class="respuestas">
+                {% for respuesta in respuestas %}
+                    <label>
+                        <input type="radio" name="respuesta" value="{{ respuesta.id }}" required>
+                        {{ respuesta.descripcion }}
+                    </label>
+                {% endfor %}
+            </div>
+
+            <button type="submit" class="boton">Responder</button>
+        </form>
+    </div>
+</body>
+</html>
+

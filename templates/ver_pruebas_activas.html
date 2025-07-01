@@ -1,0 +1,70 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Pruebas Activas</title>
+    <link rel="stylesheet" href="{% static 'css/estilo.css' %}">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+
+        h2 {
+            color: #333;
+        }
+
+        .card {
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 15px;
+            background-color: #f9f9f9;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .card h3 {
+            margin-top: 0;
+            color: #2c3e50;
+        }
+
+        .btn-comenzar {
+            background-color: #3498db;
+            color: white;
+            padding: 8px 15px;
+            border: none;
+            border-radius: 5px;
+            text-decoration: none;
+        }
+
+        .btn-comenzar:hover {
+            background-color: #2980b9;
+        }
+
+        .meta-info {
+            font-size: 0.9em;
+            color: #555;
+        }
+    </style>
+</head>
+<body>
+    <h2>Pruebas Disponibles</h2>
+
+    {% if examenes %}
+        {% for examen in examenes %}
+            <div class="card">
+                <h3>{{ examen.titulo }}</h3>
+                <p><strong>Descripción:</strong> {{ examen.descripcion }}</p>
+                <p class="meta-info">
+                    <strong>Fecha de inicio:</strong> {{ examen.idprueba.fechainicio }}<br>
+                    <strong>Fecha de fin:</strong> {{ examen.idprueba.fechafin }}
+                </p>
+                <a href="{% url 'presentar_pregunta' examen.id 1 %}">Comenzar</a>
+            </div>
+        {% endfor %}
+    {% else %}
+        <p>No hay pruebas activas en este momento.</p>
+    {% endif %}
+</body>
+</html>

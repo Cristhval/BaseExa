@@ -1,3 +1,4 @@
+from django.contrib.auth.decorators import login_required
 from django.forms import inlineformset_factory, modelformset_factory
 from django.shortcuts import render, redirect, get_object_or_404
 from .decorators import admin_required
@@ -6,7 +7,7 @@ from .forms import PruebaForm, EstudianteForm, ExamenForm, PreguntaForm, Respues
 import random
 import string
 
-from .models import Pregunta, Prueba, Respuesta
+from .models import Pregunta, Prueba, Respuesta, Examen
 
 
 def bienvenida(request):
@@ -22,7 +23,7 @@ def registro_estudiante(request):
         if form.is_valid():
             estudiante = form.save(commit=False)
 
-            # Aquí puedes elegir qué campo usar para username, ejemplo: cedula
+
             username = estudiante.cedula
 
             # Verificar que el username no exista
@@ -35,8 +36,7 @@ def registro_estudiante(request):
             user = User.objects.create_user(username=username, password=password)
             user.save()
 
-            # Si tienes relación entre estudiante y user, asigna aquí
-            # estudiante.user = user
+
 
             estudiante.save()
 
@@ -55,10 +55,10 @@ def registro_exitoso(request):
     password = request.session.get('password')
 
     if not username or not password:
-        # Si no hay datos en session, redirige a registro
+        # Si no hay datos en session redirige a registro
         return redirect('registro_estudiante')
 
-    # Opcional: limpiar las credenciales para que no se repitan
+
     del request.session['username']
     del request.session['password']
 
@@ -69,7 +69,7 @@ def registro_exitoso(request):
 
 def pregunta1(request):
     return render(request, 'pregunta1.html')
-# Create your views here.
+
 
 
 @admin_required
@@ -139,6 +139,56 @@ def agregar_respuestas(request, idprueba):
 
     return render(request, 'agregar_respuestas.html', {'formsets': formsets})
 
+@login_required
+def ver_pruebas_activas(request):
+    pruebas_activas = Prueba.objects.filter(estado=True)
+    examenes = Examen.objects.filter(idprueba__in=pruebas_activas)
+    return render(request, 'ver_pruebas_activas.html', {
+        'examenes': examenes
+    })
+
+
 @admin_required
 def panel_admin(request):
     return render(request, 'panel_admin.html')
+
+
+@login_required
+def redireccion_por_grupo(request):
+    if request.user.groups.filter(name='admin').exists():
+        return redirect('panel_admin')
+    else:
+        return redirect('ver_pruebas_activas')
+
+
+@login_required
+def presentar_pregunta(request, examen_id, numero):
+    examen = get_object_or_404(Examen, pk=examen_id)
+    preguntas = Pregunta.objects.filter(idprueba=examen.idprueba).order_by('id')
+    total_preguntas = preguntas.count()
+
+    if numero < 1 or numero > total_preguntas:
+        return redirect('ver_pruebas_activas')
+
+    pregunta = preguntas[numero - 1]
+    respuestas = Respuesta.objects.filter(idpregunta=pregunta)
+
+    # Obtener tiempo desde el banco de preguntas
+    tiempo_segundos = pregunta.idbancopregunta.tiempo.tiempo if pregunta.idbancopregunta and pregunta.idbancopregunta.tiempo else 60
+
+    if request.method == 'POST':
+        respuesta_id = request.POST.get('respuesta')
+
+        siguiente = numero + 1
+        if siguiente > total_preguntas:
+            return redirect('ver_pruebas_activas')
+        return redirect('presentar_pregunta', examen_id=examen_id, numero=siguiente)
+
+    return render(request, 'presentar_pregunta.html', {
+        'pregunta': pregunta,
+        'respuestas': respuestas,
+        'examen': examen,
+        'numero': numero,
+        'total': total_preguntas,
+        'tiempo_segundos': tiempo_segundos,
+    })

@@ -1,19 +1,4 @@
-"""
-URL configuration for ConcursoPreguntas project.
 
-The `urlpatterns` list routes URLs to views. For more information please see:
-    https://docs.djangoproject.com/en/5.2/topics/http/urls/
-Examples:
-Function views
-    1. Add an import:  from my_app import views
-    2. Add a URL to urlpatterns:  path('', views.home, name='home')
-Class-based views
-    1. Add an import:  from other_app.views import Home
-    2. Add a URL to urlpatterns:  path('', Home.as_view(), name='home')
-Including another URLconf
-    1. Import the include() function: from django.urls import include, path
-    2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
-"""
 from django.contrib import admin
 from django.urls import path
 from django.contrib.auth.views import LoginView, LogoutView
@@ -38,6 +23,10 @@ urlpatterns = [
 
     # Paso 2: Agregar preguntas
     path('crear-prueba/<int:idprueba>/agregar-respuestas/', views.agregar_respuestas, name='agregar_respuestas'),
+    path('redirigir-por-grupo/', views.redireccion_por_grupo, name='redireccion_por_grupo'),
+    path('pruebas-activas/', views.ver_pruebas_activas, name='ver_pruebas_activas'),
+
+    path('examen/<int:examen_id>/pregunta/<int:numero>/', views.presentar_pregunta, name='presentar_pregunta'),
 
     path('pregunta1/', views.pregunta1, name='pregunta1'),
 ]

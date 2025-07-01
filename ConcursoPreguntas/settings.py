@@ -126,7 +126,8 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 
-LOGIN_REDIRECT_URL = '/panel-admin/'
+LOGIN_REDIRECT_URL = '/redirigir-por-grupo/'
+
 
 
 login_url='/'

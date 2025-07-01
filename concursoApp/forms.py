@@ -26,7 +26,7 @@ class PreguntaForm(forms.ModelForm):
 class RespuestaForm(forms.ModelForm):
     class Meta:
         model = Respuesta
-        fields = ['descripcion', 'estado']  # No incluir 'id' ni 'idpregunta'
+        fields = ['descripcion', 'estado']
         labels = {
             'estado': '¿Es correcta?',
         }
