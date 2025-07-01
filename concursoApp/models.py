@@ -42,7 +42,9 @@ class Bancopregunta(models.Model):
         managed = False
 
     def __str__(self):
-        return f"BancoPregunta {self.pk}"
+        if self.idcategoria:
+            return f"Banco de preguntas - {self.idcategoria.nombre}"
+        return f"Banco de preguntas sin categoría"
 
 
 class Estudiante(models.Model):

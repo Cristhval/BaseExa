@@ -34,6 +34,10 @@ urlpatterns = [
     path('panel-admin/', views.panel_admin, name='panel_admin'),
 
     path('crear-prueba/', crear_prueba, name='crear_prueba'),
+    path('crear-prueba/<int:idprueba>/agregar-preguntas/', views.agregar_preguntas, name='agregar_preguntas'),
+
+    # Paso 2: Agregar preguntas
+    path('crear-prueba/<int:idprueba>/agregar-respuestas/', views.agregar_respuestas, name='agregar_respuestas'),
 
     path('pregunta1/', views.pregunta1, name='pregunta1'),
 ]

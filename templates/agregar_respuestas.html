@@ -1,0 +1,26 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Agregar Respuestas</title>
+    <link rel="stylesheet" href="{% static 'css/estilo.css' %}">
+</head>
+<body>
+    <h2>Agregar Respuestas a las Preguntas</h2>
+    <form method="post">
+        {% csrf_token %}
+        {% for pregunta, formset in formsets %}
+            <h3>Pregunta: {{ pregunta.cuerpo }}</h3>
+            {{ formset.management_form }}
+            {% for form in formset.forms %}
+                <fieldset>
+                    {{ form.as_p }}
+                </fieldset>
+            {% endfor %}
+            <hr>
+        {% endfor %}
+        <button type="submit">Guardar respuestas</button>
+    </form>
+</body>
+</html>

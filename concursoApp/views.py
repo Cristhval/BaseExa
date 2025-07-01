@@ -1,9 +1,13 @@
-from django.shortcuts import render, redirect
+from django.forms import inlineformset_factory, modelformset_factory
+from django.shortcuts import render, redirect, get_object_or_404
 from .decorators import admin_required
 from django.contrib.auth.models import User
-from .forms import PruebaForm, EstudianteForm
+from .forms import PruebaForm, EstudianteForm, ExamenForm, PreguntaForm, RespuestaForm
 import random
 import string
+
+from .models import Pregunta, Prueba, Respuesta
+
 
 def bienvenida(request):
     return render(request, 'bienvenida.html')
@@ -71,13 +75,69 @@ def pregunta1(request):
 @admin_required
 def crear_prueba(request):
     if request.method == 'POST':
-        form = PruebaForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect('crear_prueba')  # o a donde quieras
+        prueba_form = PruebaForm(request.POST)
+        examen_form = ExamenForm(request.POST)
+        if prueba_form.is_valid() and examen_form.is_valid():
+            prueba = prueba_form.save()
+            examen = examen_form.save(commit=False)
+            examen.idprueba = prueba
+            examen.save()
+            return redirect('agregar_preguntas', idprueba=prueba.id)
     else:
-        form = PruebaForm()
-    return render(request, 'crear_prueba.html', {'form': form})
+        prueba_form = PruebaForm()
+        examen_form = ExamenForm()
+    return render(request, 'crear_prueba.html', {'prueba_form': prueba_form, 'examen_form': examen_form})
+
+@admin_required
+def agregar_preguntas(request, idprueba):
+    prueba = get_object_or_404(Prueba, id=idprueba)
+    PreguntaFormSet = modelformset_factory(Pregunta, form=PreguntaForm, extra=3)
+
+    if request.method == 'POST':
+        formset = PreguntaFormSet(request.POST, queryset=Pregunta.objects.none())
+        if formset.is_valid():
+            preguntas = formset.save(commit=False)
+            for pregunta in preguntas:
+                pregunta.idprueba = prueba
+                pregunta.save()
+            return redirect('agregar_respuestas', idprueba=prueba.id)
+    else:
+        formset = PreguntaFormSet(queryset=Pregunta.objects.none())
+    return render(request, 'agregar_preguntas.html', {'formset': formset, 'prueba': prueba})
+
+
+@admin_required
+def agregar_respuestas(request, idprueba):
+    prueba = get_object_or_404(Prueba, id=idprueba)
+    preguntas = Pregunta.objects.filter(idprueba=prueba)
+
+    RespuestaFormSet = modelformset_factory(Respuesta, form=RespuestaForm, extra=4, can_delete=False)
+
+    formsets = []
+
+    if request.method == 'POST':
+        all_valid = True
+        for pregunta in preguntas:
+            prefix = f'respuesta_{pregunta.id}'
+            formset = RespuestaFormSet(request.POST, queryset=Respuesta.objects.filter(idpregunta=pregunta), prefix=prefix)
+            formsets.append((pregunta, formset))
+            if not formset.is_valid():
+                all_valid = False
+
+        if all_valid:
+            for pregunta, formset in formsets:
+                respuestas = formset.save(commit=False)
+                for respuesta in respuestas:
+                    respuesta.idpregunta = pregunta
+                    respuesta.save()
+            return redirect('panel_admin')
+    else:
+        for pregunta in preguntas:
+            prefix = f'respuesta_{pregunta.id}'
+            formset = RespuestaFormSet(queryset=Respuesta.objects.filter(idpregunta=pregunta), prefix=prefix)
+            formsets.append((pregunta, formset))
+
+    return render(request, 'agregar_respuestas.html', {'formsets': formsets})
 
 @admin_required
 def panel_admin(request):

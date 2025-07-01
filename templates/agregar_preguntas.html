@@ -1,0 +1,25 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Agregar Preguntas</title>
+    <link rel="stylesheet" href="{% static 'css/estilo.css' %}">
+</head>
+<body>
+    <h2>Agregar Preguntas a la Prueba: {{ prueba.id }}</h2>
+    <form method="post">
+        {% csrf_token %}
+        {{ formset.management_form }}
+
+        {% for form in formset.forms %}
+            <fieldset>
+                <legend>Pregunta {{ forloop.counter }}</legend>
+                {{ form.as_p }}
+            </fieldset>
+        {% endfor %}
+
+        <button type="submit">Siguiente: Agregar respuestas</button>
+    </form>
+</body>
+</html>
