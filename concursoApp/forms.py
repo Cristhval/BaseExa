@@ -1,4 +1,6 @@
 from django import forms
+from django.contrib.auth.forms import AuthenticationForm
+
 from .models import Prueba, Estudiante, Examen, Pregunta, Respuesta
 
 
@@ -37,3 +39,10 @@ class RespuestaForm(forms.ModelForm):
             self.fields['id'].widget = forms.HiddenInput()
         if 'idpregunta' in self.fields:
             self.fields['idpregunta'].widget = forms.HiddenInput()
+
+
+class CustomLoginForm(AuthenticationForm):
+    username = forms.CharField(
+        label='Cédula',
+        widget=forms.TextInput(attrs={'autofocus': True})
+    )

@@ -5,9 +5,83 @@
     <meta charset="UTF-8">
     <title>Agregar Preguntas</title>
     <link rel="stylesheet" href="{% static 'css/estilo.css' %}">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f6f8;
+            padding: 40px;
+        }
+
+        h2 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 30px;
+        }
+
+        form {
+            max-width: 900px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+
+        fieldset {
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            margin-bottom: 25px;
+            padding: 20px;
+            background-color: #fefefe;
+        }
+
+        legend {
+            font-weight: bold;
+            font-size: 1.2em;
+            color: #2980b9;
+            padding: 0 10px;
+        }
+
+        label {
+            display: block;
+            margin-top: 15px;
+            font-weight: bold;
+            color: #34495e;
+        }
+
+        input[type="text"],
+        textarea,
+        select {
+            width: 100%;
+            padding: 8px 12px;
+            margin-top: 5px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+        }
+
+        .form-row {
+            margin-bottom: 15px;
+        }
+
+        button {
+            display: block;
+            margin: 0 auto;
+            background-color: #3498db;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1em;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #2980b9;
+        }
+    </style>
 </head>
 <body>
-    <h2>Agregar Preguntas a la Prueba: {{ prueba.id }}</h2>
+    <h2>Agregar Preguntas a la Prueba #{{ prueba.id }}</h2>
     <form method="post">
         {% csrf_token %}
         {{ formset.management_form }}

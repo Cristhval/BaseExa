@@ -5,7 +5,7 @@ from django.contrib.auth.views import LoginView, LogoutView
 
 
 from concursoApp import views
-from concursoApp.views import crear_prueba, bienvenida, registro_estudiante, registro_exitoso
+from concursoApp.views import crear_prueba, bienvenida, registro_estudiante, registro_exitoso, CustomLoginView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -13,7 +13,7 @@ urlpatterns = [
     path('registro/', views.registro_estudiante, name='registro_estudiante'),
     path('registro/exitoso/', views.registro_exitoso, name='registro_exitoso'),
 
-    path('login/', LoginView.as_view(template_name='login.html'), name='login'),
+    path('login/', CustomLoginView.as_view(), name='login'),
     path('logout/', LogoutView.as_view(), name='logout'),
 
     path('panel-admin/', views.panel_admin, name='panel_admin'),
@@ -27,6 +27,7 @@ urlpatterns = [
     path('pruebas-activas/', views.ver_pruebas_activas, name='ver_pruebas_activas'),
 
     path('examen/<int:examen_id>/pregunta/<int:numero>/', views.presentar_pregunta, name='presentar_pregunta'),
+    path('resultados/', views.ver_resultados, name='ver_resultados'),
 
     path('pregunta1/', views.pregunta1, name='pregunta1'),
 ]

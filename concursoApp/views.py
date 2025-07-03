@@ -1,13 +1,16 @@
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.views import LoginView
 from django.forms import inlineformset_factory, modelformset_factory
+from django.http import HttpResponseBadRequest
 from django.shortcuts import render, redirect, get_object_or_404
 from .decorators import admin_required
 from django.contrib.auth.models import User
-from .forms import PruebaForm, EstudianteForm, ExamenForm, PreguntaForm, RespuestaForm
+from .forms import PruebaForm, EstudianteForm, ExamenForm, PreguntaForm, RespuestaForm, CustomLoginForm
 import random
 import string
+import logging
 
-from .models import Pregunta, Prueba, Respuesta, Examen
+from .models import Pregunta, Prueba, Respuesta, Examen, Resultado, Estudiante, RespuestaEstudiante
 
 
 def bienvenida(request):
@@ -91,7 +94,7 @@ def crear_prueba(request):
 @admin_required
 def agregar_preguntas(request, idprueba):
     prueba = get_object_or_404(Prueba, id=idprueba)
-    PreguntaFormSet = modelformset_factory(Pregunta, form=PreguntaForm, extra=3)
+    PreguntaFormSet = modelformset_factory(Pregunta, form=PreguntaForm, extra=10)
 
     if request.method == 'POST':
         formset = PreguntaFormSet(request.POST, queryset=Pregunta.objects.none())
@@ -161,6 +164,8 @@ def redireccion_por_grupo(request):
         return redirect('ver_pruebas_activas')
 
 
+logger = logging.getLogger(__name__)
+
 @login_required
 def presentar_pregunta(request, examen_id, numero):
     examen = get_object_or_404(Examen, pk=examen_id)
@@ -172,16 +177,54 @@ def presentar_pregunta(request, examen_id, numero):
 
     pregunta = preguntas[numero - 1]
     respuestas = Respuesta.objects.filter(idpregunta=pregunta)
-
-    # Obtener tiempo desde el banco de preguntas
     tiempo_segundos = pregunta.idbancopregunta.tiempo.tiempo if pregunta.idbancopregunta and pregunta.idbancopregunta.tiempo else 60
 
     if request.method == 'POST':
         respuesta_id = request.POST.get('respuesta')
 
+        if not respuesta_id:
+            error = "No se seleccionó ninguna respuesta. Por favor, elige una."
+            return render(request, 'presentar_pregunta.html', {
+                'pregunta': pregunta,
+                'respuestas': respuestas,
+                'examen': examen,
+                'numero': numero,
+                'total': total_preguntas,
+                'tiempo_segundos': tiempo_segundos,
+                'error': error,
+            })
+
+        estudiante = Estudiante.objects.get(cedula=request.user.username)
+        resultado, _ = Resultado.objects.get_or_create(
+            idestudiante=estudiante,
+            idexamen=examen,
+            defaults={'puntaje': 0}
+        )
+
+        respuesta = get_object_or_404(Respuesta, pk=respuesta_id)
+
+        ya_respondida = RespuestaEstudiante.objects.filter(
+            idresultado=resultado,
+            idpregunta=pregunta
+        ).exists()
+
+        if not ya_respondida:
+            es_correcta = respuesta.estado
+
+            RespuestaEstudiante.objects.create(
+                idresultado=resultado,
+                idpregunta=pregunta,
+                idrespuesta=respuesta,
+                es_correcta=es_correcta
+            )
+
+            if es_correcta:
+                resultado.puntaje += 1
+                resultado.save()
+
         siguiente = numero + 1
         if siguiente > total_preguntas:
-            return redirect('ver_pruebas_activas')
+            return redirect('ver_resultados')
         return redirect('presentar_pregunta', examen_id=examen_id, numero=siguiente)
 
     return render(request, 'presentar_pregunta.html', {
@@ -192,3 +235,22 @@ def presentar_pregunta(request, examen_id, numero):
         'total': total_preguntas,
         'tiempo_segundos': tiempo_segundos,
     })
+
+
+@login_required
+def ver_resultados(request):
+    resultados = Resultado.objects.select_related('idestudiante', 'idexamen') \
+        .prefetch_related(
+            'respuestaestudiante_set__idpregunta',
+            'respuestaestudiante_set__idrespuesta'
+        )
+
+    return render(request, 'ver_resultados.html', {
+        'resultados': resultados
+    })
+
+
+
+class CustomLoginView(LoginView):
+    authentication_form = CustomLoginForm
+    template_name = 'login.html'

@@ -5,22 +5,121 @@
     <meta charset="UTF-8">
     <title>Crear Prueba</title>
     <link rel="stylesheet" href="{% static 'css/estilo.css' %}">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f6f8;
+            padding: 40px;
+        }
+
+        h2 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 30px;
+        }
+
+        form {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+
+        fieldset {
+            border: none;
+            margin-bottom: 25px;
+        }
+
+        legend {
+            font-size: 1.2em;
+            margin-bottom: 10px;
+            font-weight: bold;
+            color: #2980b9;
+        }
+
+        label {
+            display: block;
+            margin-top: 15px;
+            font-weight: bold;
+            color: #34495e;
+        }
+
+        input[type="text"],
+        input[type="date"],
+        textarea,
+        select {
+            width: 100%;
+            padding: 8px 12px;
+            margin-top: 5px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+        }
+
+        input[type="checkbox"] {
+            margin-top: 8px;
+            transform: scale(1.2);
+            display: block;
+        }
+
+        button {
+            background-color: #3498db;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1em;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #2980b9;
+        }
+    </style>
 </head>
 <body>
     <h2>Crear Prueba</h2>
     <form method="post">
         {% csrf_token %}
+
         <fieldset>
             <legend>Datos de la Prueba</legend>
-            {{ prueba_form.as_p }}
+            <div>
+                {{ prueba_form.fechainicio.label_tag }}
+                {{ prueba_form.fechainicio }}
+            </div>
+            <div>
+                {{ prueba_form.fechafin.label_tag }}
+                {{ prueba_form.fechafin }}
+            </div>
+            <div>
+                {{ prueba_form.estado.label_tag }}
+                <br>
+                {{ prueba_form.estado }}
+            </div>
         </fieldset>
 
         <fieldset>
             <legend>Datos del Examen</legend>
-            {{ examen_form.as_p }}
+            <div>
+                {{ examen_form.titulo.label_tag }}
+                {{ examen_form.titulo }}
+            </div>
+            <div>
+                {{ examen_form.descripcion.label_tag }}
+                {{ examen_form.descripcion }}
+            </div>
+            <div>
+                {{ examen_form.estado.label_tag }}
+                <br>
+                {{ examen_form.estado }}
+            </div>
         </fieldset>
 
-        <button type="submit">Siguiente: Agregar preguntas</button>
+        <div style="text-align:center; margin-top: 20px;">
+            <button type="submit">Siguiente: Agregar preguntas</button>
+        </div>
     </form>
 </body>
 </html>

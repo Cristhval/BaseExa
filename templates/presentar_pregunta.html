@@ -32,14 +32,10 @@
             padding: 10px;
             border-radius: 8px;
             cursor: pointer;
+            transition: background-color 0.3s ease;
         }
         .respuestas input[type="radio"] {
             margin-right: 10px;
-        }
-        .imagen-pregunta {
-            max-width: 100%;
-            margin: 15px 0;
-            border-radius: 10px;
         }
         .boton {
             background-color: #3498db;
@@ -56,56 +52,152 @@
             font-weight: bold;
             color: #e74c3c;
         }
+        .feedback {
+            margin-top: 15px;
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+        .feedback.correcta {
+            color: #27ae60;
+        }
+        .feedback.incorrecta {
+            color: #c0392b;
+        }
+        .puntaje {
+            font-size: 1.1rem;
+            color: #34495e;
+            margin-top: 10px;
+        }
+        .imagen-pregunta {
+            max-width: 100%;
+            margin: 15px 0;
+            border-radius: 10px;
+        }
     </style>
-    <script>
-        let tiempo = {{ tiempo_segundos }};
-        const cuentaRegresiva = () => {
-            const tiempoElem = document.getElementById('timer');
-            if (tiempo > 0) {
-                tiempo--;
-                tiempoElem.innerText = tiempo + 's';
-            } else {
-                document.getElementById('form-respuesta').submit();
-            }
-        };
-        setInterval(cuentaRegresiva, 1000);
-    </script>
 </head>
 <body>
-    <div class="container">
-        <h2>{{ examen.titulo }}</h2>
-        <p><strong>Pregunta {{ numero }} de {{ total }}</strong></p>
-        <p><strong>Tiempo restante: <span id="timer">{{ tiempo_segundos }}s</span></strong></p>
+<div class="container">
+    <h2>{{ examen.titulo }}</h2>
+    <p><strong>Pregunta {{ numero }} de {{ total }}</strong></p>
+    <p><strong>Tiempo restante: <span id="timer">{{ tiempo_segundos }}s</span></strong></p>
 
-        <form method="post" id="form-respuesta">
-            {% csrf_token %}
-            <div class="pregunta">
-                <p>{{ pregunta.cuerpo }}</p>
+    <form method="post" id="form-respuesta">
+        {% csrf_token %}
+        <div class="pregunta">
+            <p>{{ pregunta.cuerpo }}</p>
 
-                {% if pregunta.url_imagen %}
-                    {% if pregunta.url_imagen|slice:":4" == "http" %}
-                    <!-- URL absoluta (internet) -->
+            {% if pregunta.url_imagen %}
+                {% if pregunta.url_imagen|slice:":4" == "http" %}
                     <img src="{{ pregunta.url_imagen }}" alt="Imagen de la pregunta" class="imagen-pregunta">
                 {% else %}
-                    <!-- Ruta relativa a /static/ -->
                     <img src="{% static pregunta.url_imagen %}" alt="Imagen de la pregunta" class="imagen-pregunta">
                 {% endif %}
             {% endif %}
+        </div>
 
-            </div>
+        <div class="respuestas">
+            {% for respuesta in respuestas %}
+                <label>
+                    <input
+                        type="radio"
+                        name="respuesta"
+                        value="{{ respuesta.id }}"
+                        required
+                        data-correcto="{{ respuesta.estado|yesno:'true,false' }}"
+                    >
+                    {{ respuesta.descripcion }}
+                </label>
+            {% endfor %}
+        </div>
 
-            <div class="respuestas">
-                {% for respuesta in respuestas %}
-                    <label>
-                        <input type="radio" name="respuesta" value="{{ respuesta.id }}" required>
-                        {{ respuesta.descripcion }}
-                    </label>
-                {% endfor %}
-            </div>
+        <button type="submit" class="boton">Responder</button>
+    </form>
 
-            <button type="submit" class="boton">Responder</button>
-        </form>
-    </div>
+    <div id="feedback" class="feedback" aria-live="polite"></div>
+    <div id="puntaje" class="puntaje"></div>
+</div>
+
+<script>
+    const tiempoInicial = {{ tiempo_segundos }};
+    let tiempo = tiempoInicial;
+    const timerElem = document.getElementById('timer');
+    const form = document.getElementById('form-respuesta');
+    const feedbackElem = document.getElementById('feedback');
+    const puntajeElem = document.getElementById('puntaje');
+    const totalPreguntas = {{ total }};
+    const preguntaNumero = {{ numero }};
+    const examenId = {{ examen.id }};
+    const storageKeyPuntaje = 'puntaje_' + examenId;
+    const storageKeyRespondida = `respondida_${examenId}_${preguntaNumero}`;
+    let yaEnviado = false;
+
+    // Reiniciar puntaje solo en la primera pregunta
+    if (preguntaNumero === 1) {
+        localStorage.setItem(storageKeyPuntaje, '0');
+    }
+
+    let puntaje = parseInt(localStorage.getItem(storageKeyPuntaje)) || 0;
+    puntajeElem.textContent = `Puntaje actual: ${puntaje}`;
+
+    const intervalo = setInterval(() => {
+        tiempo--;
+        timerElem.textContent = tiempo + 's';
+
+        if (tiempo <= 0) {
+            clearInterval(intervalo);
+            if (!yaEnviado) {
+                yaEnviado = true;
+                form.submit();
+            }
+        }
+    }, 1000);
+
+    form.addEventListener('submit', function(event) {
+        event.preventDefault();
+
+        if (yaEnviado) return;
+
+        const selected = form.querySelector('input[name="respuesta"]:checked');
+        if (!selected) {
+            feedbackElem.textContent = "No se seleccionó ninguna respuesta. Por favor, elige una.";
+            feedbackElem.className = "feedback incorrecta";
+            return;
+        }
+
+        // Verificar si ya se respondió
+        if (localStorage.getItem(storageKeyRespondida) === '1') {
+            feedbackElem.textContent = "Ya respondiste esta pregunta.";
+            feedbackElem.className = "feedback incorrecta";
+            return;
+        }
+
+        clearInterval(intervalo); // Detener el cronómetro
+        const esCorrecta = selected.getAttribute('data-correcto') === 'true';
+
+        if (esCorrecta) {
+            feedbackElem.textContent = "✔ ¡Respuesta correcta!";
+            feedbackElem.className = "feedback correcta";
+            puntaje++;
+            localStorage.setItem(storageKeyPuntaje, puntaje);
+            puntajeElem.textContent = `Puntaje actual: ${puntaje}`;
+        } else {
+            feedbackElem.textContent = "✖ Respuesta incorrecta.";
+            feedbackElem.className = "feedback incorrecta";
+        }
+
+        // Registrar que esta pregunta ya fue respondida
+        localStorage.setItem(storageKeyRespondida, '1');
+
+        form.querySelectorAll('input[name="respuesta"]').forEach(i => i.disabled = true);
+        form.querySelector('button[type="submit"]').disabled = true;
+
+        yaEnviado = true;
+
+        setTimeout(() => {
+            form.submit();
+        }, 1200);
+    });
+</script>
+
 </body>
 </html>
-

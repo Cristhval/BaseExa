@@ -24,18 +24,26 @@
     </div>
 </header>
 
-
-    <main class="admin-content">
-        <div class="admin-card">
-            <h2>Gestión de Pruebas</h2>
-            <p>Desde aquí puedes crear y administrar pruebas para los usuarios.</p>
-            <div class="admin-acciones">
-                <a href="{% url 'crear_prueba' %}" class="btn btn-primary">
-                    <i class="fas fa-plus-circle"></i> Crear nueva prueba
-                </a>
-            </div>
+<main class="admin-content">
+    <div class="admin-card">
+        <h2>Gestión de Pruebas</h2>
+        <p>Desde aquí puedes crear y administrar pruebas para los usuarios.</p>
+        <div class="admin-acciones">
+            <a href="{% url 'crear_prueba' %}" class="btn btn-primary">
+                <i class="fas fa-plus-circle"></i> Crear nueva prueba
+            </a>
         </div>
-    </main>
+    </div>
+
+    <div class="admin-card">
+        <h2>Resultados</h2>
+        <p>Consulta los resultados obtenidos por los estudiantes en las distintas pruebas.</p>
+        <div class="admin-acciones">
+            <a href="{% url 'ver_resultados' %}" class="btn btn-secondary">
+                <i class="fas fa-chart-bar"></i> Ver resultados</a>
+        </div>
+    </div>
+</main>
 
 </body>
 </html>

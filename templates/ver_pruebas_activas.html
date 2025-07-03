@@ -3,68 +3,109 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Pruebas Activas</title>
+    <title>Pruebas Disponibles</title>
     <link rel="stylesheet" href="{% static 'css/estilo.css' %}">
     <style>
         body {
-            font-family: Arial, sans-serif;
-            padding: 20px;
+            background-color: #f4f7fa;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 40px 20px;
+            color: #2c3e50;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: auto;
+            background-color: white;
+            padding: 30px 40px;
+            border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.08);
         }
 
         h2 {
-            color: #333;
+            text-align: center;
+            font-size: 2rem;
+            margin-bottom: 40px;
+            color: #34495e;
         }
 
         .card {
-            border: 1px solid #ccc;
-            border-radius: 10px;
-            padding: 20px;
-            margin-bottom: 15px;
-            background-color: #f9f9f9;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            border: 1px solid #dce3ec;
+            border-radius: 12px;
+            padding: 25px 30px;
+            margin-bottom: 25px;
+            background-color: #f9fbfd;
+            box-shadow: 0 3px 8px rgba(0,0,0,0.06);
+            transition: box-shadow 0.3s ease;
+        }
+
+        .card:hover {
+            box-shadow: 0 8px 18px rgba(0,0,0,0.12);
         }
 
         .card h3 {
             margin-top: 0;
-            color: #2c3e50;
+            font-size: 1.5rem;
+            color: #2980b9;
         }
 
-        .btn-comenzar {
-            background-color: #3498db;
-            color: white;
-            padding: 8px 15px;
-            border: none;
-            border-radius: 5px;
-            text-decoration: none;
-        }
-
-        .btn-comenzar:hover {
-            background-color: #2980b9;
+        .card p {
+            margin: 10px 0;
+            font-size: 1rem;
+            color: #555;
         }
 
         .meta-info {
-            font-size: 0.9em;
-            color: #555;
+            font-size: 0.9rem;
+            color: #7f8c8d;
+            margin-top: 10px;
+        }
+
+        .btn-comenzar {
+            display: inline-block;
+            background-color: #3498db;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: bold;
+            margin-top: 15px;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn-comenzar:hover {
+            background-color: #216aaf;
+        }
+
+        .no-pruebas {
+            text-align: center;
+            font-size: 1.1rem;
+            color: #888;
+            margin-top: 40px;
         }
     </style>
 </head>
 <body>
-    <h2>Pruebas Disponibles</h2>
+    <div class="container">
+        <h2>Pruebas Disponibles</h2>
 
-    {% if examenes %}
-        {% for examen in examenes %}
-            <div class="card">
-                <h3>{{ examen.titulo }}</h3>
-                <p><strong>Descripción:</strong> {{ examen.descripcion }}</p>
-                <p class="meta-info">
-                    <strong>Fecha de inicio:</strong> {{ examen.idprueba.fechainicio }}<br>
-                    <strong>Fecha de fin:</strong> {{ examen.idprueba.fechafin }}
-                </p>
-                <a href="{% url 'presentar_pregunta' examen.id 1 %}">Comenzar</a>
-            </div>
-        {% endfor %}
-    {% else %}
-        <p>No hay pruebas activas en este momento.</p>
-    {% endif %}
+        {% if examenes %}
+            {% for examen in examenes %}
+                <div class="card">
+                    <h3>{{ examen.titulo }}</h3>
+                    <p><strong>Descripción:</strong> {{ examen.descripcion }}</p>
+                    <div class="meta-info">
+                        <p><strong>Fecha de inicio:</strong> {{ examen.idprueba.fechainicio }}</p>
+                        <p><strong>Fecha de fin:</strong> {{ examen.idprueba.fechafin }}</p>
+                    </div>
+                    <a href="{% url 'presentar_pregunta' examen.id 1 %}" class="btn-comenzar">Comenzar</a>
+                </div>
+            {% endfor %}
+        {% else %}
+            <p class="no-pruebas">No hay pruebas activas en este momento.</p>
+        {% endif %}
+    </div>
 </body>
 </html>
